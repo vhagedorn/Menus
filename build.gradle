@@ -1,0 +1,90 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.20'
+}
+
+group 'net.pirate_tales.util'
+version '1.0.0'
+
+def name = project.name + '.jar'
+def main = project.group + '.menu.Menus'
+def java = '16'
+
+project.buildDir = 'target/'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+
+    maven { url 'https://papermc.io/repo/repository/maven-public/' }
+    maven { url 'https://repo.aikar.co/content/groups/aikar/' }
+    maven { url 'https://hub.spigotmc.org/nexus/content/groups/public/' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://oss.sonatype.org/content/repositories/central' }
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    compileOnly 'gg.airplane:airplane-api:1.17.1-R0.1-SNAPSHOT'
+}
+
+shadowJar {
+    archiveFileName.set(name)
+    destinationDirectory.set(project.buildDir)
+    mergeServiceFiles()
+    minimize()
+    manifest {
+        attributes('Main-Class': main)
+    }
+}
+
+build {
+    dependsOn(shadowJar)
+}
+
+processResources {
+    filesMatching('plugin.yml') {
+        expand('version': project.version, 'name': project.name, 'main': main)
+    }
+}
+
+compileKotlin {
+    targetCompatibility java
+    sourceCompatibility java
+
+    kotlinOptions {
+        jvmTarget = java
+        freeCompilerArgs = ['-Xjvm-default=all']
+    }
+}
+
+jar {
+    destinationDirectory.set(project.buildDir)
+    archiveFileName.set(project.name + '-' + project.version + '-unshaded.jar')
+}
+
+tasks.register("sourceJar", Jar) {
+    from(sourceSets.main.allSource)
+    archiveClassifier.set("sources")
+    classifier = "sources"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            version = project.version.toString()
+            groupId = project.group.toString()
+
+            from components["kotlin"]
+
+            afterEvaluate {
+                artifactId = tasks.jar.archiveBaseName.get()
+            }
+
+            artifact(sourceJar)
+        }
+    }
+}
