@@ -12,9 +12,8 @@ interface ButtonHolder {
 
 	val buttons: MutableMap<Int, Button>
 
-	@JvmDefault
+	infix fun Button.into(slots: IntRange) { slots.forEach { buttons[it] = this } }
 	infix fun Button.into(slots: Array<Int>) = slots.forEach { buttons[it] = this }
-	@JvmDefault
 	infix fun Button.into(slot: Int) { buttons[slot] = this }
 
 }

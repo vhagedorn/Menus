@@ -16,6 +16,7 @@ interface MenuList<T> : Menu, FillHolder {
 
 	/**
 	 * The template (title, previous button, etc.) to be used for each page.
+	 * All callbacks present within the template will also be called (respectively) on each page.
 	 */
 	val template: Menu
 

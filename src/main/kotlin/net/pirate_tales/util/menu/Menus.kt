@@ -5,25 +5,19 @@
  */
 package net.pirate_tales.util.menu
 
-import net.pirate_tales.util.menu.builder.MenuListBuilder
-import net.pirate_tales.util.menu.impl.MenuSize
 import net.pirate_tales.util.menu.builder.MenuBuilder
+import net.pirate_tales.util.menu.builder.MenuListBuilder
 import net.pirate_tales.util.menu.button.Button
 import net.pirate_tales.util.menu.button.ButtonHolder
 import net.pirate_tales.util.menu.button.builder.ButtonBuilder
 import net.pirate_tales.util.menu.impl.ListMenu
+import net.pirate_tales.util.menu.impl.MenuSize
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.Material
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.HumanEntity
-import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.PlayerInventory
 import org.bukkit.plugin.java.JavaPlugin
 
 class Menus : JavaPlugin() {
@@ -32,31 +26,13 @@ class Menus : JavaPlugin() {
 		makesMeCry = this
 	}
 
-	override fun onEnable() {
-		server.pluginManager.registerEvents(MenuListener, this)
-		getCommand("menu")?.setExecutor(this)
+	override fun onEnable() = server.pluginManager.registerEvents(MenuListener, this)
+
+	override fun onDisable() = Bukkit.getOnlinePlayers().forEach {
+		it.removeMetadata(MenuTags.CURRENT_MENU, this)
+		it.removeMetadata(MenuTags.PREVIOUS_MENU, this)
 	}
 
-	override fun onDisable() {
-		Bukkit.getOnlinePlayers().forEach {
-			it.removeMetadata(MenuTags.CURRENT_MENU, this)
-			it.removeMetadata(MenuTags.PREVIOUS_MENU, this)
-		}
-	}
-
-	val list get() =
-		menuListOf(slots = 9 * 4, *Material.values().copyOf(29), transformer = { ItemStack(it!!) }) {
-			title = MenuListTitle.PAGE_CURRENT + "/" + MenuListTitle.PAGE_COUNT
-			fill = include(9 until 36)
-		}.also(MenuList<*>::generate)
-
-	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-		if(sender !is Player) return false
-
-		(list as ListMenu).open(sender, args[0].toInt())
-
-		return true
-	}
 }
 
 lateinit var makesMeCry: Menus

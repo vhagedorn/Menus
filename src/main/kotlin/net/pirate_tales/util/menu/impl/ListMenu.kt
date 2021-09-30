@@ -5,12 +5,13 @@ import net.pirate_tales.util.menu.MenuList
 import net.pirate_tales.util.menu.MenuListTitle
 import net.pirate_tales.util.menu.button
 import net.pirate_tales.util.menu.button.Button
-import net.pirate_tales.util.menu.button.ButtonHolder
 import org.bukkit.entity.HumanEntity
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.lang.IllegalArgumentException
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 /**
  * @author RuthlessJailer
@@ -32,84 +33,59 @@ class ListMenu<T>(
 	override var fill = fill ?: exclude(*buttons.keys.toIntArray())
 		private set
 
-	/*private*/var pages = mutableListOf<PageMenu<T>>()
+	private var pages = mutableListOf<PageMenu>()
 
 	override fun generate() {
 		val s = fill.included.size
-		val count = (items.size / s).coerceAtLeast(1)
+		val count = (items.size.toDouble() / s.toDouble()).roundToInt().coerceAtLeast(1)
 		pages.clear()
 		if(s > size.slots) throw IllegalArgumentException("included slots > menu size")
-//		println("chunked.forEach")
-//		items.chunked(s).forEach { println(it) }
-//		println("mapIndexedTo")
-//		items.chunked(s).mapIndexed { index, list ->
-//			println("$index, $list")
-//			null }
-		items.chunked(s).mapIndexedTo(pages) { i, t ->
-			println(i)
-			val pm = PageMenu(t, i, count, this)
-			buttons.forEach { (slot, button) ->
-				println(slot.toString() + " -> " + button.item.type)
-			}
-			pm
-		}
-		if(pages.isEmpty()) {
-			println("EMPTY")
-			pages += PageMenu(emptyList(), 0, 1, this)
-		}
+		items.chunked(s).mapIndexedTo(pages) { i, t -> PageMenu(t, i, count) }
+		if(pages.isEmpty()) pages += PageMenu(emptyList(), 0, 1)
 		pages.forEach(Menu::generate)
 	}
 
 	override fun open(player: HumanEntity) = pages.first().open(player)
 
-	fun open(player: HumanEntity, page: Int) = pages[page].open(player)
+	private inner class PageMenu(items: List<T>, index: Int, count: Int) : BaseMenu(plugin, template) {
 
-	/*private inner*/ class PageMenu<T>(items: List<T>, val i: Int, val count: Int, listMenu: ListMenu<T>) : BaseMenu(listMenu.plugin, listMenu.template) {
-		private val nexti = (i + 1).coerceIn(0 until count)
-		private val previ = (i - 1).coerceIn(0 until count)
 		init {
-			println("buttons ==== " + (this.buttons === listMenu.buttons))
 			for ((i, item) in items.withIndex()) {//fill the buttons
-				println("item:$item")
-				button(listMenu.transformer(item)) {} into listMenu.fill.included[i]
-//				val button = button(transformer(item)) {}
-//				button.into(fill.included[i])
+				button(transformer(item)) {
+					click = { event, button ->
+						select(event, button, items[i])
+					}
+				} into fill.included[i]
 			}
-
-			println("i:$i, next:$nexti, prev:$previ")
 
 			//append our paging logic into the click callback for `back` and `next` buttons
 
-			val b = listMenu.back.first.click
-			button(listMenu.back.first.item) {
+			val backCallback = back.first.click
+			button(back.first.item) {
 				click = { event, button ->
-					b(this, event, button)
-					println("$i -> ${i - 1}")
-//					pages[i - 1].open(event.whoClicked)
-					listMenu.pages[i - 1].open(event.whoClicked)
+					val i = (index - 1).coerceIn(0 until count)
+					if(page(event, button, index, i)) {
+						backCallback(event, button)
+						pages[i].open(event.whoClicked)
+					}
 				}
-			} into listMenu.back.second
+			} into back.second
 
-			val n = listMenu.next.first.click
-			button(listMenu.next.first.item) {
+			val nextCallback = next.first.click
+			button(next.first.item) {
 				click = { event, button ->
-					n(this, event, button)
-					println("$i -> ${i + 1}")
-					listMenu.pages[i + 1].open(event.whoClicked)
+					val i = (index + 1).coerceIn(0 until count)
+					if(page(event, button, index, i)) {
+						nextCallback(event, button)
+						pages[i].open(event.whoClicked)
+					}
 				}
-			} into listMenu.next.second
+			} into next.second
 
 			//fill in title placeholders
-//			title(title.replace(MenuListTitle.PAGE_CURRENT, (i + 1).toString()).replace(MenuListTitle.PAGE_COUNT, count.toString()))
-//			title(title.replace(MenuListTitle.PAGE_CURRENT, i.toString()).replace(MenuListTitle.PAGE_COUNT, count.toString()))
-			title(title.replace(MenuListTitle.PAGE_CURRENT, i.toString()))
+			title(title.replace(MenuListTitle.PAGE_CURRENT, (index + 1).toString()).replace(MenuListTitle.PAGE_COUNT, count.toString()))
 		}
 
-		override fun open(player: HumanEntity) {
-			println("pg open")
-			player.menuMeta(this)
-			player.openInventory(inventory)
-		}
 	}
 
 }

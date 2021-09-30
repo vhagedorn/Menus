@@ -37,11 +37,6 @@ object MenuListener : Listener {
 
 		if (menu.inventory != event.inventory) return
 
-		if(menu is ListMenu.PageMenu<*>){
-			println("page")
-		}
-
-
 		event.isCancelled = menu.protectAll
 		if (menu.click(menu, event, button) && button != null) {
 			event.isCancelled = button.protect
