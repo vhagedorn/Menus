@@ -37,7 +37,7 @@ class ListMenu<T>(
 
 	override fun generate() {
 		val s = fill.included.size
-		val count = (items.size.toDouble() / s.toDouble()).roundToInt().coerceAtLeast(1)
+		val count = ceil(items.size.toDouble() / s.toDouble()).roundToInt().coerceAtLeast(1)
 		pages.clear()
 		if(s > size.slots) throw IllegalArgumentException("included slots > menu size")
 		items.chunked(s).mapIndexedTo(pages) { i, t -> PageMenu(t, i, count) }

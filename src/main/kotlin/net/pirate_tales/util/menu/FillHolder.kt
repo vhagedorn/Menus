@@ -10,7 +10,7 @@ import net.pirate_tales.util.menu.builder.MenuListBuilder
  */
 interface FillHolder {
 	fun exclude(vararg slots: Int) = MenuFill.excluded(0 until INVENTORY_MAX_SIZE, *slots)
-	fun exclude(slots: IntRange) = MenuFill.excluded(0 until INVENTORY_MAX_SIZE, *slots.toList().toIntArray())
+	fun exclude(vararg slots: IntRange) = MenuFill.excluded(0 until INVENTORY_MAX_SIZE, *slots.map { it.toList().toIntArray() }.flatMap { it.toList() }.toIntArray())
 	fun include(vararg slots: Int) = MenuFill.included(0 until INVENTORY_MAX_SIZE, *slots)
-	fun include(slots: IntRange) = MenuFill.included(0 until INVENTORY_MAX_SIZE, *slots.toList().toIntArray())
+	fun include(vararg slots: IntRange) = MenuFill.included(0 until INVENTORY_MAX_SIZE, *slots.map { it.toList().toIntArray() }.flatMap { it.toList() }.toIntArray())
 }
