@@ -69,24 +69,11 @@ inline fun menu(slots: Int, builder: MenuBuilder.() -> Unit): Menu =
 inline fun menu(type: InventoryType, builder: MenuBuilder.() -> Unit): Menu =
 	MenuBuilder(makesMeCry, MenuSize(type)).apply(builder).build()
 
-inline fun <T> menuListOf(slots: Int, vararg items: T, noinline transformer: (T) -> ItemStack, builder: MenuListBuilder<T>.() -> Unit): MenuList<T> =
-	MenuListBuilder(makesMeCry, MenuSize(slots), items.toMutableList(), transformer).apply(builder).build()
-
 inline fun <T> menuListOf(slots: Int, items: Collection<T>, noinline transformer: (T) -> ItemStack, builder: MenuListBuilder<T>.() -> Unit): MenuList<T> =
 	MenuListBuilder(makesMeCry, MenuSize(slots), items.toMutableList(), transformer).apply(builder).build()
 
-inline fun <T> menuListOf(type: InventoryType, vararg items: T, noinline transformer: (T) -> ItemStack, builder: MenuListBuilder<T>.() -> Unit): MenuList<T> =
-	MenuListBuilder(makesMeCry, MenuSize(type), items.toMutableList(), transformer).apply(builder).build()
-
 inline fun <T> menuListOf(type: InventoryType, items: Collection<T>, noinline transformer: (T) -> ItemStack, builder: MenuListBuilder<T>.() -> Unit): MenuList<T> =
 	MenuListBuilder(makesMeCry, MenuSize(type), items.toMutableList(), transformer).apply(builder).build()
-
-/**
- * Converts a [Menu] to a [ListMenu], using the [Menu] as a template for each page.
- *
- */
-inline fun <T> Menu.toList(vararg items: T, noinline transformer: (T) -> ItemStack, builder: MenuListBuilder<T>.() -> Unit) =
-	MenuListBuilder(makesMeCry, this, items.toMutableList(), transformer).apply(builder).build()
 
 /**
  * Converts a [Menu] to a [ListMenu], using the [Menu] as a template for each page.
