@@ -5,11 +5,11 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.20'
 }
 
-group 'net.pirate_tales.util'
+group 'me.vadim.util.menus'
 version '1.0.0'
 
 def name = project.name + '.jar'
-def main = project.group + '.menu.Menus'
+def main = project.group + '.Menus'
 def java = '16'
 
 project.buildDir = 'target/'

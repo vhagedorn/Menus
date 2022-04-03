@@ -1,7 +1,7 @@
-package net.pirate_tales.util.menu
+package me.vadim.util.menu
 
-import net.pirate_tales.util.menu.impl.MenuFill
-import net.pirate_tales.util.menu.builder.MenuListBuilder
+import me.vadim.util.menu.impl.MenuFill
+import me.vadim.util.menu.builder.MenuListBuilder
 
 /**
  * Interface to allow [MenuFill] creation within constructed [MenuList] objects as well as within [MenuListBuilder] scope lambdas.

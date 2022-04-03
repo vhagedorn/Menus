@@ -1,10 +1,10 @@
-package net.pirate_tales.util.menu.impl
+package me.vadim.util.menu.impl
 
-import net.pirate_tales.util.menu.Menu
-import net.pirate_tales.util.menu.MenuList
-import net.pirate_tales.util.menu.MenuListTitle
-import net.pirate_tales.util.menu.button
-import net.pirate_tales.util.menu.button.Button
+import me.vadim.util.menu.Menu
+import me.vadim.util.menu.MenuList
+import me.vadim.util.menu.MenuListTitle
+import me.vadim.util.menu.button
+import me.vadim.util.menu.button.Button
 import org.bukkit.entity.HumanEntity
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack

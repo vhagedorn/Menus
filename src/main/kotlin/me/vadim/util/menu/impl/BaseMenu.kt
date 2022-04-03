@@ -1,7 +1,8 @@
-package net.pirate_tales.util.menu.impl
+package me.vadim.util.menu.impl
 
+import me.vadim.util.menu.*
 import net.pirate_tales.util.menu.*
-import net.pirate_tales.util.menu.button.Button
+import me.vadim.util.menu.button.Button
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -26,9 +27,9 @@ open class BaseMenu(
 			  ) : Menu {
 
 	constructor(plugin: Plugin, template: Menu): this(plugin,
-										  template.parent, template.size, template.title,
-										  template.buttons.toMutableMap(), template.previousMenuButton?.copy(), template.protectAll,
-										  template.open, template.close, template.click)
+													  template.parent, template.size, template.title,
+													  template.buttons.toMutableMap(), template.previousMenuButton?.copy(), template.protectAll,
+													  template.open, template.close, template.click)
 
 	override var inventory: Inventory = size.toInventory(colorize(title))
 

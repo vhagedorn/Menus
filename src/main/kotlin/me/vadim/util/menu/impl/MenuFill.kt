@@ -1,4 +1,4 @@
-package net.pirate_tales.util.menu.impl
+package me.vadim.util.menu.impl
 
 /**
  * A class that allows for the "inversion" of [IntArray]s. Reduces time when specifying slot includes for [ListMenu].

@@ -1,8 +1,8 @@
-package net.pirate_tales.util.menu.button.builder
+package me.vadim.util.menu.button.builder
 
-import net.pirate_tales.util.menu.Menu
-import net.pirate_tales.util.menu.button.Button
-import net.pirate_tales.util.menu.button.impl.ButtonImpl
+import me.vadim.util.menu.Menu
+import me.vadim.util.menu.button.Button
+import me.vadim.util.menu.button.impl.ButtonImpl
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 

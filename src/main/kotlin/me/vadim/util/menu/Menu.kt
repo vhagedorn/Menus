@@ -1,8 +1,8 @@
-package net.pirate_tales.util.menu
+package me.vadim.util.menu
 
-import net.pirate_tales.util.menu.button.Button
-import net.pirate_tales.util.menu.button.ButtonHolder
-import net.pirate_tales.util.menu.impl.MenuSize
+import me.vadim.util.menu.button.Button
+import me.vadim.util.menu.button.ButtonHolder
+import me.vadim.util.menu.impl.MenuSize
 import org.bukkit.entity.HumanEntity
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent

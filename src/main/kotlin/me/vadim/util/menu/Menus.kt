@@ -3,15 +3,15 @@
  *
  * @author RuthlessJailer
  */
-package net.pirate_tales.util.menu
+package me.vadim.util.menu
 
-import net.pirate_tales.util.menu.builder.MenuBuilder
-import net.pirate_tales.util.menu.builder.MenuListBuilder
-import net.pirate_tales.util.menu.button.Button
-import net.pirate_tales.util.menu.button.ButtonHolder
-import net.pirate_tales.util.menu.button.builder.ButtonBuilder
-import net.pirate_tales.util.menu.impl.ListMenu
-import net.pirate_tales.util.menu.impl.MenuSize
+import me.vadim.util.menu.builder.MenuBuilder
+import me.vadim.util.menu.builder.MenuListBuilder
+import me.vadim.util.menu.button.Button
+import me.vadim.util.menu.button.ButtonHolder
+import me.vadim.util.menu.button.builder.ButtonBuilder
+import me.vadim.util.menu.impl.ListMenu
+import me.vadim.util.menu.impl.MenuSize
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.HumanEntity

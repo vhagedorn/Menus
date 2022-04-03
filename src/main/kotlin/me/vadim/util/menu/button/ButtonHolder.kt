@@ -1,7 +1,7 @@
-package net.pirate_tales.util.menu.button
+package me.vadim.util.menu.button
 
-import net.pirate_tales.util.menu.Menu
-import net.pirate_tales.util.menu.builder.MenuBuilder
+import me.vadim.util.menu.Menu
+import me.vadim.util.menu.builder.MenuBuilder
 
 /**
  * Interface to allow button creation within constructed [Menu] objects as well as within [MenuBuilder] scope lambdas.

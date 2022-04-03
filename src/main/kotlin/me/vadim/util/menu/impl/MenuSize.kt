@@ -1,6 +1,6 @@
-package net.pirate_tales.util.menu.impl
+package me.vadim.util.menu.impl
 
-import net.pirate_tales.util.menu.colorize
+import me.vadim.util.menu.colorize
 import org.bukkit.Bukkit
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
