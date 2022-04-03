@@ -1,7 +1,6 @@
 package me.vadim.util.menu.builder
 
 import me.vadim.util.menu.*
-import net.pirate_tales.util.menu.*
 import me.vadim.util.menu.button.Button
 import me.vadim.util.menu.impl.ListMenu
 import me.vadim.util.menu.impl.MenuFill

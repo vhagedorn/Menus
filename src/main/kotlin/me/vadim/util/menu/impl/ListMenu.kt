@@ -30,7 +30,7 @@ class ListMenu<T>(
 
 	//todo: do we need a copy constructor here?
 
-	override var fill = fill ?: exclude(*buttons.keys.toIntArray())
+	final override var fill = fill ?: exclude(*buttons.keys.toIntArray())
 		private set
 
 	private var pages = mutableListOf<PageMenu>()

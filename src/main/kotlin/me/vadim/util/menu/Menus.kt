@@ -18,25 +18,32 @@ import org.bukkit.entity.HumanEntity
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 
 class Menus : JavaPlugin() {
 
+	companion object {
+		fun enable() = Bukkit.getServer().pluginManager.registerEvents(MenuListener, makesMeCry)
+		fun disable() = Bukkit.getOnlinePlayers().forEach {
+			it.removeMetadata(MenuTags.CURRENT_MENU, makesMeCry)
+			it.removeMetadata(MenuTags.PREVIOUS_MENU, makesMeCry)
+		}
+	}
+
+	//if we're loaded as a plugin, these will run
+	//otherswise let's call the static methods with the shading plugin assigning `makesMeCry` onLoad
 	override fun onLoad() {
 		makesMeCry = this
 	}
 
-	override fun onEnable() = server.pluginManager.registerEvents(MenuListener, this)
+	override fun onEnable() = enable()
 
-	override fun onDisable() = Bukkit.getOnlinePlayers().forEach {
-		it.removeMetadata(MenuTags.CURRENT_MENU, this)
-		it.removeMetadata(MenuTags.PREVIOUS_MENU, this)
-	}
+	override fun onDisable() = disable()
 
 }
 
-lateinit var makesMeCry: Menus
-	private set
+lateinit var makesMeCry: Plugin
 
 fun colorize(string: String): String = ChatColor.translateAlternateColorCodes('&', string)
 
@@ -65,7 +72,13 @@ inline fun menu(type: InventoryType, builder: MenuBuilder.() -> Unit): Menu =
 inline fun <T> menuListOf(slots: Int, vararg items: T, noinline transformer: (T) -> ItemStack, builder: MenuListBuilder<T>.() -> Unit): MenuList<T> =
 	MenuListBuilder(makesMeCry, MenuSize(slots), items.toMutableList(), transformer).apply(builder).build()
 
+inline fun <T> menuListOf(slots: Int, items: Collection<T>, noinline transformer: (T) -> ItemStack, builder: MenuListBuilder<T>.() -> Unit): MenuList<T> =
+	MenuListBuilder(makesMeCry, MenuSize(slots), items.toMutableList(), transformer).apply(builder).build()
+
 inline fun <T> menuListOf(type: InventoryType, vararg items: T, noinline transformer: (T) -> ItemStack, builder: MenuListBuilder<T>.() -> Unit): MenuList<T> =
+	MenuListBuilder(makesMeCry, MenuSize(type), items.toMutableList(), transformer).apply(builder).build()
+
+inline fun <T> menuListOf(type: InventoryType, items: Collection<T>, noinline transformer: (T) -> ItemStack, builder: MenuListBuilder<T>.() -> Unit): MenuList<T> =
 	MenuListBuilder(makesMeCry, MenuSize(type), items.toMutableList(), transformer).apply(builder).build()
 
 /**
@@ -74,6 +87,14 @@ inline fun <T> menuListOf(type: InventoryType, vararg items: T, noinline transfo
  */
 inline fun <T> Menu.toList(vararg items: T, noinline transformer: (T) -> ItemStack, builder: MenuListBuilder<T>.() -> Unit) =
 	MenuListBuilder(makesMeCry, this, items.toMutableList(), transformer).apply(builder).build()
+
+/**
+ * Converts a [Menu] to a [ListMenu], using the [Menu] as a template for each page.
+ *
+ */
+inline fun <T> Menu.toList(items: Collection<T>, noinline transformer: (T) -> ItemStack, builder: MenuListBuilder<T>.() -> Unit) =
+	MenuListBuilder(makesMeCry, this, items.toMutableList(), transformer).apply(builder).build()
+
 
 /**
  * Creates a [Button] within a [ButtonHolder] scope.

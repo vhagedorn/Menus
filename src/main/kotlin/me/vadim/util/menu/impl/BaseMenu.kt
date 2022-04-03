@@ -1,7 +1,6 @@
 package me.vadim.util.menu.impl
 
 import me.vadim.util.menu.*
-import net.pirate_tales.util.menu.*
 import me.vadim.util.menu.button.Button
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
