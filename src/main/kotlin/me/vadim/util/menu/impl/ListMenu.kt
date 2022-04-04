@@ -9,7 +9,6 @@ import org.bukkit.entity.HumanEntity
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
-import java.lang.IllegalArgumentException
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -25,7 +24,7 @@ class ListMenu<T>(
 	override val back: Pair<Button, Int>,
 	override val select: MenuList<T>.(InventoryClickEvent, Button, T) -> Unit,
 	override val page: MenuList<T>.(InventoryClickEvent, Button, Int, Int) -> Boolean,
-	override val items: MutableList<T>
+	override var items: MutableList<T>
 				 ) : BaseMenu(plugin, template), MenuList<T> {
 
 	//todo: do we need a copy constructor here?
@@ -35,25 +34,52 @@ class ListMenu<T>(
 
 	private var pages = mutableListOf<PageMenu>()
 
+	override fun update() =
+		pages.forEach {
+			it.update()
+		}
+
 	override fun generate() {
 		val s = fill.included.size
 		val count = ceil(items.size.toDouble() / s.toDouble()).roundToInt().coerceAtLeast(1)
-		pages.clear()
-		if(s > size.slots) throw IllegalArgumentException("included slots > menu size")
-		items.chunked(s).mapIndexedTo(pages) { i, t -> PageMenu(t, i, count) }
-		if(pages.isEmpty()) pages += PageMenu(emptyList(), 0, 1)
-		pages.forEach(Menu::generate)
+
+		if (s > size.slots) throw IllegalArgumentException("included slots > menu size")
+
+		val items: List<List<T>> = items.chunked(s)
+
+		items.forEachIndexed { i, t ->
+			if (i >= pages.size)//lazily add pages
+				pages += PageMenu(t, i, count)
+
+			pages[i].items = t
+			pages[i].count = count
+		}
+
+		if (pages.size > count)//lazily remove pages
+			for (i in 0 until pages.size - count)
+				pages -= pages[i + count].also { it.inventory.viewers.toSet().forEach { e -> open(e) } }
+
+		//instead of clearing, add or remove the right number of pages, then mutate the items after
+		//this lets the client receive changes (it uses existing Menu.inventory objects)
+		//the only downside of this is that MenuTitle#PAGE_COUNT is no longer accurate, since the title can't be updated
+//		pages.clear()
+//		items.chunked(s).mapIndexedTo(pages) { i, t -> PageMenu(t, i, count) }
+		if (pages.isEmpty()) pages += PageMenu(emptyList(), 0, 1)
+		pages.forEach { it.generate() }
 	}
 
 	override fun open(player: HumanEntity) = pages.first().open(player)
 
-	private inner class PageMenu(items: List<T>, index: Int, count: Int) : BaseMenu(plugin, template) {
+	private inner class PageMenu(var items: List<T>, private val index: Int, var count: Int) : BaseMenu(plugin, template) {
 
-		init {
+		override fun generate() {
+			for (i in fill.included)//clear the page items, but don't replace any template buttons
+				buttons -= i
+
 			for ((i, item) in items.withIndex()) {//fill the buttons
 				button(transformer(item)) {
 					click = { event, button ->
-						select(event, button, items[i])
+						items.getOrNull(i)?.apply { select(event, button, this) }
 					}
 				} into fill.included[i]
 			}
@@ -64,7 +90,7 @@ class ListMenu<T>(
 			button(back.first.item) {
 				click = { event, button ->
 					val i = (index - 1).coerceIn(0 until count)
-					if(page(event, button, index, i)) {
+					if (page(event, button, index, i)) {
 						backCallback(event, button)
 						pages[i].open(event.whoClicked)
 					}
@@ -75,15 +101,22 @@ class ListMenu<T>(
 			button(next.first.item) {
 				click = { event, button ->
 					val i = (index + 1).coerceIn(0 until count)
-					if(page(event, button, index, i)) {
+					if (page(event, button, index, i)) {
 						nextCallback(event, button)
 						pages[i].open(event.whoClicked)
 					}
 				}
 			} into next.second
 
-			//fill in title placeholders
-			title(title.replace(MenuListTitle.PAGE_CURRENT, (index + 1).toString()).replace(MenuListTitle.PAGE_COUNT, count.toString()))
+			super.generate()
+		}
+
+		init {
+			//fill in title placeholder
+			title(title
+					  .replace(MenuListTitle.PAGE_CURRENT, (index + 1).toString())
+					  .replace(MenuListTitle.PAGE_COUNT, (index + 1).toString()))//title will not update unless the inventory is re-baked, but it won't since it's static for item refreshes
+			generate()
 		}
 
 	}

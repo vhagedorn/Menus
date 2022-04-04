@@ -82,7 +82,6 @@ inline fun <T> menuListOf(type: InventoryType, items: Collection<T>, noinline tr
 inline fun <T> Menu.toList(items: Collection<T>, noinline transformer: (T) -> ItemStack, builder: MenuListBuilder<T>.() -> Unit) =
 	MenuListBuilder(makesMeCry, this, items.toMutableList(), transformer).apply(builder).build()
 
-
 /**
  * Creates a [Button] within a [ButtonHolder] scope.
  *
@@ -133,5 +132,6 @@ object MenuTags {
  */
 object MenuListTitle {
 	const val PAGE_CURRENT = "{PAGE}"
+	@Deprecated("This feature was removed for dynamic menus. It functions identically as PAGE_CURRENT.", ReplaceWith("MenuListTitle.PAGE_CURRENT"))
 	const val PAGE_COUNT = "{COUNT}"
 }

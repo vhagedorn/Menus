@@ -60,8 +60,8 @@ interface MenuList<T> : Menu, FillHolder {
 	val page: MenuList<T>.(InventoryClickEvent, Button, Int, Int) -> Boolean
 
 	/**
-	 * [MenuList]s are mutable. If this collection is mutated, [generate] (and optionally [update]) must be called to reflect changes.
+	 * [MenuList]s are mutable. If this collection is changed or mutated, [generate] (and optionally [update]) must be called to reflect changes.
 	 */
-	val items: MutableList<T>
+	var items: MutableList<T>
 
 }

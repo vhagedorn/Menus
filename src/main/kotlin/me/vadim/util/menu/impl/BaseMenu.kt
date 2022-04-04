@@ -50,7 +50,7 @@ open class BaseMenu(
 	override fun title(title: String, reopen: Boolean) {
 		this.title = title
 		inventory = size.toInventory(title)
-		generate()
+		generate()//don't call this from that method; it creates a new inventory anyway
 		if (reopen) inventory.viewers.forEach { entity -> open(entity) }
 	}
 
