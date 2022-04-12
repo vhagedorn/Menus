@@ -10,6 +10,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.plugin.Plugin
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * @author RuthlessJailer
@@ -17,7 +18,7 @@ import org.bukkit.plugin.Plugin
 open class BaseMenu(
 	protected val plugin: Plugin,
 	override val parent: Menu?, final override val size: MenuSize, final override var title: String,
-	override val buttons: MutableMap<Int, Button>,
+	buttons: MutableMap<Int, Button>,
 	override val previousMenuButton: Pair<Button, Int>?,
 	override val protectAll: Boolean = true,
 	override val open: Menu.(InventoryOpenEvent) -> Unit = { _ -> },
@@ -29,6 +30,8 @@ open class BaseMenu(
 													  template.parent, template.size, template.title,
 													  template.buttons.toMutableMap(), template.previousMenuButton?.copy(), template.protectAll,
 													  template.open, template.close, template.click)
+
+	override val buttons = ConcurrentHashMap(buttons)
 
 	override var inventory: Inventory = size.toInventory(colorize(title))
 
