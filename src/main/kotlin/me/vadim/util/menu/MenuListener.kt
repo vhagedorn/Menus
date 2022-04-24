@@ -33,9 +33,10 @@ object MenuListener : Listener {
 	@EventHandler
 	fun click(event: InventoryClickEvent) {
 		val menu = event.whoClicked.currentMenu() ?: return
-		val button = menu.buttons[event.slot]
+		val button = if (menu.inventory == event.clickedInventory) menu.buttons[event.slot] else null
 
-		if (menu.inventory != event.inventory) return
+		//check for correct view, but let clicks outside the menu still trigger #click
+		if (event.view.topInventory != menu.inventory) return
 
 		event.isCancelled = menu.protectAll
 		if (menu.click(menu, event, button) && button != null) {

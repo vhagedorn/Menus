@@ -9,6 +9,7 @@ import org.bukkit.entity.HumanEntity
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import java.util.*
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -24,12 +25,21 @@ class ListMenu<T>(
 	override val back: Pair<Button, Int>,
 	override val select: MenuList<T>.(InventoryClickEvent, Button, T) -> Unit,
 	override val page: MenuList<T>.(InventoryClickEvent, Button, Int, Int) -> Boolean,
-	override var items: MutableList<T>
+	items: MutableList<T>
 				 ) : BaseMenu(plugin, template), MenuList<T> {
+
+	private val itemsLock = Object()
+
+	override var items: MutableList<T> = items
+		set(value) {
+			synchronized(itemsLock) {
+				field = Collections.synchronizedList(value)
+			}
+		}
 
 	//todo: do we need a copy constructor here?
 
-	final override var fill = fill ?: exclude(*buttons.keys.toIntArray())
+	override var fill = fill ?: exclude(*buttons.keys.toIntArray())
 		private set
 
 	private var pages = mutableListOf<PageMenu>()
@@ -40,24 +50,27 @@ class ListMenu<T>(
 		}
 
 	override fun generate() {
-		val s = fill.included.size
-		val count = ceil(items.size.toDouble() / s.toDouble()).roundToInt().coerceAtLeast(1)
+		synchronized(itemsLock) {
+			val s = fill.included.size
+			val count = ceil(items.size.toDouble() / s.toDouble()).roundToInt().coerceAtLeast(1)
 
-		if (s > size.slots) throw IllegalArgumentException("included slots > menu size")
+			if (s > size.slots) throw IllegalArgumentException("included slots > menu size")
 
-		val items: List<List<T>> = items.chunked(s)
+			val items: List<List<T>> = items.chunked(s)
 
-		items.forEachIndexed { i, t ->
-			if (i >= pages.size)//lazily add pages
-				pages += PageMenu(t, i, count)
+			items.forEachIndexed { i, t ->
+				if (i >= pages.size)//lazily add pages
+					pages += PageMenu(t, i, count)
 
-			pages[i].items = t
-			pages[i].count = count
+				pages[i].items = t
+				pages[i].count = count
+			}
+
+
+			if (pages.size > count)//lazily remove pages
+				for (i in 0 until pages.size - count)
+					pages -= pages[i + count].also { it.inventory.viewers.toSet().forEach { e -> open(e) } }
 		}
-
-		if (pages.size > count)//lazily remove pages
-			for (i in 0 until pages.size - count)
-				pages -= pages[i + count].also { it.inventory.viewers.toSet().forEach { e -> open(e) } }
 
 		//instead of clearing, add or remove the right number of pages, then mutate the items after
 		//this lets the client receive changes (it uses existing Menu.inventory objects)
@@ -113,9 +126,11 @@ class ListMenu<T>(
 
 		init {
 			//fill in title placeholder
-			title(title
-					  .replace(MenuListTitle.PAGE_CURRENT, (index + 1).toString())
-					  .replace(MenuListTitle.PAGE_COUNT, (index + 1).toString()))//title will not update unless the inventory is re-baked, but it won't since it's static for item refreshes
+			title(
+				title
+					.replace(MenuListTitle.PAGE_CURRENT, (index + 1).toString())
+					.replace(MenuListTitle.PAGE_COUNT, (index + 1).toString())
+				 )//title will not update unless the inventory is re-baked, but it won't since it's static for item refreshes
 			generate()
 		}
 

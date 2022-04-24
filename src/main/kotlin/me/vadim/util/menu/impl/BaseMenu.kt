@@ -26,10 +26,14 @@ open class BaseMenu(
 	override val click: Menu.(InventoryClickEvent, Button?) -> Boolean = { _, _ -> true }
 			  ) : Menu {
 
-	constructor(plugin: Plugin, template: Menu): this(plugin,
-													  template.parent, template.size, template.title,
-													  template.buttons.toMutableMap(), template.previousMenuButton?.copy(), template.protectAll,
-													  template.open, template.close, template.click)
+	private val buttonLock = Object()
+
+	constructor(plugin: Plugin, template: Menu) : this(
+		plugin,
+		template.parent, template.size, template.title,
+		template.buttons.toMutableMap(), template.previousMenuButton?.copy(), template.protectAll,
+		template.open, template.close, template.click
+													  )
 
 	override val buttons = ConcurrentHashMap(buttons)
 
@@ -64,18 +68,20 @@ open class BaseMenu(
 	override fun generate() {
 		inventory.clear()
 
-		val back = previousMenuButton
-		if (back != null) {
-			button(back.first.item) {//register back button
-				click = { event, button ->
-					back.first.click(this, event, button)
-					parent?.open(event.whoClicked as Player)
-				}
-			} into back.second
-		}
+		synchronized(buttonLock) {
+			val back = previousMenuButton
+			if (back != null) {
+				button(back.first.item) {//register back button
+					click = { event, button ->
+						back.first.click(this, event, button)
+						parent?.open(event.whoClicked as Player)
+					}
+				} into back.second
+			}
 
-		buttons.forEach { (slot, button) ->
-			inventory.setItem(slot, button.item)
+			buttons.forEach { (slot, button) ->
+				inventory.setItem(slot, button.item)
+			}
 		}
 	}
 }
