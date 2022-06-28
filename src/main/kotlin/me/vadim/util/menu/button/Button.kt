@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack
  * Represents a button within a [Menu].
  * Buttons are slot-based, therefore if the item is modified it will not affect the functionality of the button.
  *
- * @author RuthlessJailer
+ * @author vadim
  */
 interface Button {
 

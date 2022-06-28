@@ -13,7 +13,7 @@ import org.bukkit.plugin.Plugin
 /**
  * Kotlin DSL builder [MenuList]. If you change anything from [MenuBuilder] in this scope, it will be reflected in the created [MenuList], but not modify the underlying `template`.
  *
- * @author RuthlessJailer
+ * @author vadim
  */
 class MenuListBuilder<T>(
 	plugin: Plugin,

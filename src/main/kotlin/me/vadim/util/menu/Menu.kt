@@ -12,17 +12,17 @@ import org.bukkit.inventory.Inventory
 /**
  * Wrapper for [Inventory] (and its corresponding events), containing [Button]s and QoL methods to handle events, etc.
  *
- * @author RuthlessJailer
+ * @author vadim
  */
-interface Menu : ButtonHolder {
+interface Menu : ButtonHolder, SizeHolder {
 
 
 	/* Characteristics. */
 
 
 	val parent: Menu?
-	val size: MenuSize
 	val title: String
+	override val size: MenuSize
 
 	/**
 	 * The button to open the previous [Menu].

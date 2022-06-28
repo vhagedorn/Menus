@@ -6,7 +6,7 @@ import me.vadim.util.menu.builder.MenuBuilder
 /**
  * Interface to allow button creation within constructed [Menu] objects as well as within [MenuBuilder] scope lambdas.
  *
- * @author RuthlessJailer
+ * @author vadim
  */
 interface ButtonHolder {
 

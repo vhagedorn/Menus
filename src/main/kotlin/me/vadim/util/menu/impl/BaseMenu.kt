@@ -13,7 +13,7 @@ import org.bukkit.plugin.Plugin
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * @author RuthlessJailer
+ * @author vadim
  */
 open class BaseMenu(
 	protected val plugin: Plugin,
@@ -57,7 +57,8 @@ open class BaseMenu(
 	override fun title(title: String, reopen: Boolean) {
 		this.title = title
 		inventory = size.toInventory(title)
-		generate()//don't call this from that method; it creates a new inventory anyway
+		//wat
+		//generate()//don't call this from that method; it creates a new inventory anyway
 		if (reopen) inventory.viewers.forEach { entity -> open(entity) }
 	}
 

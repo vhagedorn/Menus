@@ -14,7 +14,7 @@ import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 /**
- * @author RuthlessJailer
+ * @author vadim
  */
 class ListMenu<T>(
 	plugin: Plugin,

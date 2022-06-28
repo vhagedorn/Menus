@@ -1,7 +1,7 @@
 /**
  * Utilities for the menu package.
  *
- * @author RuthlessJailer
+ * @author vadim
  */
 package me.vadim.util.menu
 

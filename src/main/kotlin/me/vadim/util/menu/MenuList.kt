@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack
 /**
  * An extension of [Menu], providing logic to automatically create and page through a list of items.
  *
- * @author RuthlessJailer
+ * @author vadim
  */
 interface MenuList<T> : Menu, FillHolder {
 

@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryOpenEvent
 
 /**
- * @author RuthlessJailer
+ * @author vadim
  */
 object MenuListener : Listener {
 

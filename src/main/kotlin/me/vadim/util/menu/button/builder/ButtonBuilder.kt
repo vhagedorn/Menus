@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack
 /**
  * Kotlin DSL builder for [Button].
  *
- * @author RuthlessJailer
+ * @author vadim
  */
 class ButtonBuilder(val item: ItemStack) {
 

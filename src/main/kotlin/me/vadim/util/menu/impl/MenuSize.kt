@@ -8,7 +8,7 @@ import org.bukkit.inventory.Inventory
 /**
  * A class that functions as an either/or between [InventoryType] and slot count.
  *
- * @author RuthlessJailer
+ * @author vadim
  */
 class MenuSize private constructor(val type: InventoryType?, val slots: Int) {
 	constructor(type: InventoryType) : this(type, type.defaultSize)
