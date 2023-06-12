@@ -12,7 +12,7 @@ interface ButtonHolder {
 
 	val buttons: MutableMap<Int, Button>
 
-	infix fun Button.into(slots: IntRange) { slots.forEach { buttons[it] = this } }
+	infix fun Button.into(slots: IntProgression) { slots.forEach { buttons[it] = this } }
 	infix fun Button.into(slots: Array<Int>) = slots.forEach { buttons[it] = this }
 	infix fun Button.into(slot: Int) { buttons[slot] = this }
 

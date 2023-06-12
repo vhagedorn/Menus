@@ -10,7 +10,7 @@ import me.vadim.util.menu.builder.MenuListBuilder
  */
 interface FillHolder : SizeHolder {
 	fun exclude(vararg slots: Int) = MenuFill.excluded(0 until size.slots, *slots)
-	fun exclude(vararg slots: IntRange) = MenuFill.excluded(0 until size.slots, *slots.map { it.toList().toIntArray() }.flatMap { it.toList() }.toIntArray())
+	fun exclude(vararg slots: IntProgression) = MenuFill.excluded(0 until size.slots, *slots.map { it.toList().toIntArray() }.flatMap { it.toList() }.toIntArray())
 	fun include(vararg slots: Int) = MenuFill.included(0 until size.slots, *slots)
-	fun include(vararg slots: IntRange) = MenuFill.included(0 until size.slots, *slots.map { it.toList().toIntArray() }.flatMap { it.toList() }.toIntArray())
+	fun include(vararg slots: IntProgression) = MenuFill.included(0 until size.slots, *slots.map { it.toList().toIntArray() }.flatMap { it.toList() }.toIntArray())
 }

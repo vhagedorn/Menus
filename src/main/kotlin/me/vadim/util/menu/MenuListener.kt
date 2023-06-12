@@ -6,6 +6,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryOpenEvent
+import org.bukkit.metadata.FixedMetadataValue
 
 /**
  * @author vadim
@@ -28,6 +29,11 @@ object MenuListener : Listener {
 		if (menu.inventory != event.inventory) return
 
 		menu.close(menu, event)
+
+//		event.player.apply { // update metadata values on close
+//			setMetadata(MenuTags.PREVIOUS_MENU, FixedMetadataValue(makesMeCry, menu))
+//			setMetadata(MenuTags.CURRENT_MENU, FixedMetadataValue(makesMeCry, null))
+//		}
 	}
 
 	@EventHandler

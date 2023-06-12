@@ -24,7 +24,9 @@ import org.bukkit.plugin.java.JavaPlugin
 class Menus : JavaPlugin() {
 
 	companion object {
+		@JvmStatic
 		fun enable() = Bukkit.getServer().pluginManager.registerEvents(MenuListener, makesMeCry)
+		@JvmStatic
 		fun disable() = Bukkit.getOnlinePlayers().forEach {
 			it.removeMetadata(MenuTags.CURRENT_MENU, makesMeCry)
 			it.removeMetadata(MenuTags.PREVIOUS_MENU, makesMeCry)
