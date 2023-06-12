@@ -95,6 +95,29 @@ inline fun <T> Menu.toList(items: Collection<T>, noinline transformer: (T) -> It
 inline fun ButtonHolder.button(item: ItemStack, builder: ButtonBuilder.() -> Unit): Button = ButtonBuilder(item).apply(builder).build()
 
 /**
+ * Utility function to frame the outside of a [Menu] with `button`.
+ */
+fun MenuBuilder.frameWith(button: Button) {
+	for (f in frame())
+		button into f
+}
+
+/**
+ * Utility function to return the indexes of an outer frame around the [Menu].
+ */
+fun MenuBuilder.frame(): IntArray {
+	var frame = emptyArray<Int>()
+
+	for (i in 0 until size.slots) {
+		if (i < 9) frame += i//first row
+		if ((i + 1) % 9 == 0 || i % 9 == 0) frame += i//sides (i or next multiple of 9)
+		if (i >= size.slots - 9) frame += i//last row
+	}
+
+	return frame.toIntArray()
+}
+
+/**
  * @return the currently open [Menu] of this [HumanEntity], or `null` if one is not open
  */
 fun HumanEntity.currentMenu(): Menu? = menu(MenuTags.CURRENT_MENU)
