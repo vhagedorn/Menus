@@ -59,22 +59,24 @@ class ListMenu<T>(
 			val items: List<List<T>> = items.chunked(s)
 
 			items.forEachIndexed { i, t ->
-				if (i >= pages.size)//lazily add pages
+				if (i >= pages.size) // lazily add pages
 					pages += PageMenu(t, i, count)
 
 				pages[i].items = t
 				pages[i].count = count
 			}
 
-
-			if (pages.size > count)//lazily remove pages
+			if (pages.size > count) // lazily remove pages
 				for (i in 0 until pages.size - count)
 					pages -= pages[i + count].also { it.inventory.viewers.toSet().forEach { e -> open(e) } }
+
+			if(this.items.isEmpty()) // fix: reset first page when items becomes empty
+				pages.clear()
 		}
 
-		//instead of clearing, add or remove the right number of pages, then mutate the items after
-		//this lets the client receive changes (it uses existing Menu.inventory objects)
-		//the only downside of this is that MenuTitle#PAGE_COUNT is no longer accurate, since the title can't be updated
+		// instead of clearing, add or remove the right number of pages, then mutate the items after
+		// this lets the client receive changes (it uses existing Menu#inventory objects)
+		// the only downside of this is that MenuTitle#PAGE_COUNT is no longer supported, since the title can't be updated
 //		pages.clear()
 //		items.chunked(s).mapIndexedTo(pages) { i, t -> PageMenu(t, i, count) }
 		if (pages.isEmpty()) pages += PageMenu(emptyList(), 0, 1)
@@ -129,7 +131,7 @@ class ListMenu<T>(
 			title(
 				title
 					.replace(MenuListTitle.PAGE_CURRENT, (index + 1).toString())
-					.replace(MenuListTitle.PAGE_COUNT, (index + 1).toString())
+					.replace(MenuListTitle.PAGE_CURRENT, (index + 1).toString())
 				 )//title will not update unless the inventory is re-baked, but it won't since it's static for item refreshes
 			generate()
 		}
