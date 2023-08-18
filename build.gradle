@@ -2,15 +2,15 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.5.20'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.22'
 }
 
 group 'me.vadim.util.menus'
 version '1.0.0'
 
-def name = project.name + '.jar'
-def main = project.group + '.Menus'
-def java = '16'
+def name_jar = project.name + '.jar'
+def main_cls = project.group + '.Menus'
+def java_ver = '17'
 
 project.buildDir = 'target/'
 
@@ -33,12 +33,12 @@ dependencies {
 }
 
 shadowJar {
-    archiveFileName.set(name)
+    archiveFileName.set(name_jar)
     destinationDirectory.set(project.buildDir)
     mergeServiceFiles()
     minimize()
     manifest {
-        attributes('Main-Class': main)
+        attributes('Main-Class': main_cls)
     }
 }
 
@@ -48,17 +48,20 @@ build {
 
 processResources {
     filesMatching('plugin.yml') {
-        expand('version': project.version, 'name': project.name, 'main': main)
+        expand('version': project.version, 'name': project.name, 'main': main_cls)
     }
 }
 
 compileKotlin {
-    targetCompatibility java
-    sourceCompatibility java
-
     kotlinOptions {
-        jvmTarget = java
+        jvmTarget = java_ver
         freeCompilerArgs = ['-Xjvm-default=all']
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(java_ver)
     }
 }
 
@@ -70,7 +73,7 @@ jar {
 tasks.register("sourceJar", Jar) {
     from(sourceSets.main.allSource)
     archiveClassifier.set("sources")
-    classifier = "sources"
+//    classifier = "sources"
 }
 
 publishing {
