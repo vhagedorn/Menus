@@ -16,7 +16,7 @@ import kotlin.math.roundToInt
 /**
  * @author vadim
  */
-class ListMenu<T>(
+open class ListMenu<T>(
 	plugin: Plugin,
 	override val template: Menu,
 	override val transformer: (T) -> ItemStack,
@@ -28,7 +28,7 @@ class ListMenu<T>(
 	items: MutableList<T>
 				 ) : BaseMenu(plugin, template), MenuList<T> {
 
-	private val itemsLock = Object()
+	protected val itemsLock = Object()
 
 	override var items: MutableList<T> = items
 		set(value) {
@@ -40,9 +40,9 @@ class ListMenu<T>(
 	//todo: do we need a copy constructor here?
 
 	override var fill = fill ?: exclude(*buttons.keys.toIntArray())
-		private set
+		protected set
 
-	private var pages = mutableListOf<PageMenu>()
+	protected var pages = mutableListOf<PageMenu>()
 
 	override fun update() =
 		pages.forEach {
@@ -85,7 +85,7 @@ class ListMenu<T>(
 
 	override fun open(player: HumanEntity) = pages.first().open(player)
 
-	private inner class PageMenu(var items: List<T>, private val index: Int, var count: Int) : BaseMenu(plugin, template) {
+	protected inner class PageMenu(var items: List<T>, private val index: Int, var count: Int) : BaseMenu(plugin, template) {
 
 		override fun generate() {
 			for (i in fill.included)//clear the page items, but don't replace any template buttons
