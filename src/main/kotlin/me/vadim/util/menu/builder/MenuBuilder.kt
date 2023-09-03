@@ -17,7 +17,7 @@ import org.bukkit.plugin.Plugin
  * @author vadim
  */
 open class MenuBuilder(
-	val plugin: Plugin,
+	protected val plugin: Plugin,
 	override val size: MenuSize,
 	var parent: Menu? = null,
 	var title: String = size.type?.defaultTitle ?: "",

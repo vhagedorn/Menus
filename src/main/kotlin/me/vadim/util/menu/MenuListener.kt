@@ -1,6 +1,5 @@
 package me.vadim.util.menu
 
-import me.vadim.util.menu.impl.ListMenu
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -19,6 +18,7 @@ object MenuListener : Listener {
 
 		if (menu.inventory != event.inventory) return
 
+		event.player.menuMeta(menu)
 		menu.open(menu, event)
 	}
 
@@ -28,12 +28,13 @@ object MenuListener : Listener {
 
 		if (menu.inventory != event.inventory) return
 
-		menu.close(menu, event)
-
 //		event.player.apply { // update metadata values on close
 //			setMetadata(MenuTags.PREVIOUS_MENU, FixedMetadataValue(makesMeCry, menu))
 //			setMetadata(MenuTags.CURRENT_MENU, FixedMetadataValue(makesMeCry, null))
 //		}
+
+		event.player.menuMeta(null)
+		menu.close(menu, event) // if opening a parent menu the meta will be updated again somewhere along this method call
 	}
 
 	@EventHandler

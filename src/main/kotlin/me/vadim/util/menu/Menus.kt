@@ -18,6 +18,7 @@ import org.bukkit.entity.HumanEntity
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -125,19 +126,33 @@ fun HumanEntity.currentMenu(): Menu? = menu(MenuTags.CURRENT_MENU)
 /**
  * @return the previous [Menu] of this [HumanEntity], or `null` if there is not one
  */
-fun HumanEntity.previousMenu(): Menu? = menu(MenuTags.PREVIOUS_MENU)
+@Deprecated("This feature does not work.")
+fun HumanEntity.previousMenu(): Menu? = null //menu(MenuTags.PREVIOUS_MENU)
+
+/**
+ * @param menu the new current menu
+ * @return the [Menu] associated with the current `tag` on this [HumanEntity], or `null`
+ */
+/*internal*/ fun HumanEntity.menuMeta(menu: Menu?){
+//	val current = currentMenu()
+//
+//	if (current != null) {//set the previous menu, if present
+//		setMetadata(MenuTags.PREVIOUS_MENU, FixedMetadataValue(plugin, current))
+//	}
+//
+	setMetadata(MenuTags.CURRENT_MENU, FixedMetadataValue(makesMeCry, menu))
+}
 
 /**
  * @param tag the metadata key from which to retrieve the menu
  * @return the [Menu] associated with the current `tag` on this [HumanEntity], or `null`
  */
-private fun HumanEntity.menu(tag: String) =
+/*internal*/ fun HumanEntity.menu(tag: String) =
 	if (!hasMetadata(tag)) {
 		null
 	} else {
 		getMetadata(tag).firstOrNull()?.value() as Menu?
 	}
-
 
 /**
  * The maximum size of any [Inventory].
@@ -148,8 +163,9 @@ const val INVENTORY_MAX_SIZE = 9 * 6
  * Various metadata tags corresponding to menus.
  */
 object MenuTags {
-	const val CURRENT_MENU = "P-T_MENU_now"
-	const val PREVIOUS_MENU = "P-T_MENU_last"
+	const val CURRENT_MENU  = "_MENU_now"
+	@Deprecated("This feature does not work. Please use an account system for advanced menu tracking.")
+	const val PREVIOUS_MENU = "_MENU_pre"
 }
 
 /**

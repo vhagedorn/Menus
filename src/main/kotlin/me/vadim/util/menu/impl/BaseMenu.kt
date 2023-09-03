@@ -44,21 +44,10 @@ open class BaseMenu(
 		player.openInventory(inventory)
 	}
 
-	fun HumanEntity.menuMeta(menu: Menu){
-		val current = currentMenu()
-
-		if (current != null) {//set the previous menu, if present
-			setMetadata(MenuTags.PREVIOUS_MENU, FixedMetadataValue(plugin, current))
-		}
-
-		setMetadata(MenuTags.CURRENT_MENU, FixedMetadataValue(plugin, menu))
-	}
-
 	override fun title(title: String, reopen: Boolean) {
 		this.title = title
 		inventory = size.toInventory(title)
-		//wat
-		//generate()//don't call this from that method; it creates a new inventory anyway
+		//generate()//don't call this from that method; it creates a new inventory anyway // what the huh
 		if (reopen) inventory.viewers.forEach { entity -> open(entity) }
 	}
 
